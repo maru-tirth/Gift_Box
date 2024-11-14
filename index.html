@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gift Box 🎁</title>
+  <style>
+    /* Basic styling for the page */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f8ff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Confetti animation */
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Container for gift boxes */
+    #gift-container {
+      display: flex;
+      justify-content: space-around;
+      padding: 2vh;
+      gap: 2vw;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Basic styling for the gift box */
+    .gift-box {
+      width: 20vw;
+      height: 20vw;
+      max-width: 120px;
+      max-height: 120px;
+      background-color: #FF6347;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      animation: bounce 0.6s ease alternate infinite;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .gift-box::before {
+      position: absolute;
+      content: "";
+      background-color: #FFD700;
+      width: 10%;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Horizontal ribbon */
+    .gift-box::after {
+      position: absolute;
+      content: "";
+      background-color: #FFD700;
+      width: 100%;
+      height: 10%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    /* CSS Bow */
+    .bow {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid #FFD700;  /* Dark Blue for better contrast */
+      border-right: 20px solid #FFD700; /* Dark Blue for better contrast */
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+    }
+
+    /* Bow center knot */
+    .knot {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background-color: #00008B; /* Gold for the center knot */
+      border-radius: 50%;
+      z-index: 2;
+      top: -8px;
+      right: -8px;
+    }
+
+    /* Hidden image styling */
+    .box-image {
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      display: none;
+      z-index: 10;
+    }
+
+    /* Tooltip styling */
+    .tooltip {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+      z-index: 15;
+    }
+
+    /* Tooltip arrow */
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+
+    /* Show tooltip when active */
+    .gift-box.active .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Bounce animation for the gift box */
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas" class="confetti"></canvas>
+
+  <!-- Gift boxes -->
+  <div id="gift-container">
+    <div id="box1" class="gift-box" onclick="showGift(1)">
+      <div class="bow"><div class="knot"></div></div>
+      <img src="https://www.theamethyststore.com/cdn/shop/files/AMS-106-4697.jpg?v=1690352938&width=1080" alt="Jhumka" class="box-image" id="img1">
+      <span class="tooltip">Your birthday gift is Jhumka, chal kidhar se lena hai ??</span>
+    </div>
+    <div id="box2" class="gift-box" onclick="showGift(2)">
+      <div class="bow"><div class="knot"></div></div>
+      <img src="https://www.theamethyststore.com/cdn/shop/files/AMS-106-4697.jpg?v=1690352938&width=1080" alt="Jhumka" class="box-image" id="img2">
+      <span class="tooltip">Your birthday gift is Jhumka, chal kidhar se lena hai ??</span>
+    </div>
+    <div id="box3" class="gift-box" onclick="showGift(3)">
+      <div class="bow"><div class="knot"></div></div>
+      <img src="https://www.theamethyststore.com/cdn/shop/files/AMS-106-4697.jpg?v=1690352938&width=1080" alt="Jhumka" class="box-image" id="img3">
+      <span class="tooltip">Your birthday gift is Jhumka, chal kidhar se lena hai ??</span>
+    </div>
+  </div>
+
+  <audio id="swishSound" src="./effect.mp3" preload="auto"></audio>
+
+  <script>
+    let selected = false;
+
+    function showGift(boxNumber) {
+      if (!selected) {
+        const box = document.getElementById(`box${boxNumber}`);
+        const image = document.getElementById(`img${boxNumber}`);
+        const sound = document.getElementById("swishSound");
+
+        // Show the image
+        image.style.display = "block";
+
+        // Show the tooltip on mobile/tablet
+        box.classList.add("active");
+
+        // Play sound and sync with image display
+        sound.play();
+
+        // Start confetti effect
+        startConfetti();
+
+        // Dismiss tooltip after 2 seconds
+        setTimeout(() => {
+          box.classList.remove("active");
+        }, 2000);
+
+        selected = true; // Prevent further clicks and shuffling
+      }
+    }
+
+    // Confetti effect using Canvas
+    function startConfetti() {
+      const confettiCanvas = document.getElementById('confetti-canvas');
+      const context = confettiCanvas.getContext('2d');
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const confettiArray = [];
+      for (let i = 0; i < 100; i++) {
+        confettiArray.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          size: Math.random() * 5 + 2,
+          speed: Math.random() * 5 + 2,
+        });
+      }
+
+      function animateConfetti() {
+        context.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiArray.forEach((confetti) => {
+          context.beginPath();
+          context.arc(confetti.x, confetti.y, confetti.size, 0, 2 * Math.PI);
+          context.fillStyle = confetti.color;
+          context.fill();
+
+          confetti.y += confetti.speed;
+          if (confetti.y > confettiCanvas.height) confetti.y = -confetti.size;
+        });
+        requestAnimationFrame(animateConfetti);
+      }
+      animateConfetti();
+    }
+  </script>
+
+</body>
+</html>
